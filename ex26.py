@@ -52,7 +52,7 @@ print "--------------"
 print poem
 print "--------------"
 
-five = 10 - (2 + (3 - 5))
+five = 10 - 2 + 3 - 6
 print "This should be five: %s" % five
 
 def secret_formula(started):
@@ -75,15 +75,15 @@ print "We'd have %d beans, %d jars, and %d crabapples." % secret_formula(start_p
 
 
 sentence = "All god things come to those who weight."
-words = ex26.break_words(sentence)
-words
-sorted_words = ex26.sort_words(words)
+words = break_words(sentence)
+
+sorted_words = sort_words(words)
 
 print_first_word(words)
 print_last_word(words)
 print_first_word(sorted_words)
 print_last_word(sorted_words)
-sorted_words = ex26.sort_sentence(sentence)
+sorted_words = sort_sentence(sentence)
 print sorted_words
 
 print_first_and_last(sentence)
