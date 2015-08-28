@@ -1,3 +1,0 @@
-Go to this link to review all simboles and functions:
-
-http://learnpythonthehardway.org/book/ex37.html
