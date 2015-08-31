@@ -45,7 +45,41 @@ import sys
 # and builds and returns a word/count dict for it.
 # Then print_words() and print_top() can just call the utility function.
 
-###
+### Starts
+
+def words_count_dict(filename):
+    words_count = {}
+    input_file = open(filename, 'r')
+    for lines in input_file:
+        words = lines.split()
+        for word in words:
+            word = word.lower()
+            if word not in words_count:
+                words_count[word] = 1
+            else:
+                words_count[word] = words_count[word] + 1
+    input_file.close()
+    return words_count
+
+def print_words(filename):
+    words = words_count_dict(filename)
+    word = sorted(words.keys())
+    for w in word:
+        print w, words[w]
+
+def get_count(wordcount_tuple):
+    return wordcount_tuple[1]
+
+def print_top(filename):
+    words_count = words_count_dict(filename)
+    items = sorted(words_count.items(), key = get_count, reverse = True)
+
+    for item in items[:20]:
+        print item[0], item[1]
+
+## lab end solution
+
+
 
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
