@@ -4,40 +4,40 @@ import math
 # Queues: FIFOQueue (source: http://aima-python.googlecode.com/svn/trunk/utils.py)
 
 class Queue:
-    """Queue is an abstract class/interface.
-    Supports the following methods and functions:
-        q.append(item)  -- add an item to the queue
-        q.extend(items) -- equivalent to: for item in items: q.append(item)
-        q.pop()         -- return the top item from the queue
-        len(q)          -- number of items in q (also q.__len())
-        item in q       -- does q contain item?
-    If Python ever gets interfaces, Queue will be an interface."""
+	"""Queue is an abstract class/interface.
+	Supports the following methods and functions:
+		q.append(item)  -- add an item to the queue
+		q.extend(items) -- equivalent to: for item in items: q.append(item)
+		q.pop()         -- return the top item from the queue
+		len(q)          -- number of items in q (also q.__len())
+		item in q       -- does q contain item?
+	If Python ever gets interfaces, Queue will be an interface."""
 
-    def __init__(self):
-        abstract
+	def __init__(self):
+		abstract
 
-    def extend(self, items):
-        for item in items: self.append(item)
+	def extend(self, items):
+		for item in items: self.append(item)
 
 class FIFOQueue(Queue):
-    """A First-In-First-Out Queue."""
-    def __init__(self):
-        self.A = []; self.start = 0
-    def enqueue(self, item):
-        self.A.append(item)
-    def __len__(self):
-        return len(self.A) - self.start
-    def extend(self, items):
-        self.A.extend(items)
-    def dequeue(self):
-        e = self.A[self.start]
-        self.start += 1
-        if self.start > 5 and self.start > len(self.A)/2:
-            self.A = self.A[self.start:]
-            self.start = 0
-        return e
-    def __contains__(self, item):
-        return item in self.A[self.start:]
+	"""A First-In-First-Out Queue."""
+	def __init__(self):
+		self.A = []; self.start = 0
+	def enqueue(self, item):
+		self.A.append(item)
+	def __len__(self):
+		return len(self.A) - self.start
+	def extend(self, items):
+		self.A.extend(items)
+	def dequeue(self):
+		e = self.A[self.start]
+		self.start += 1
+		if self.start > 5 and self.start > len(self.A)/2:
+			self.A = self.A[self.start:]
+			self.start = 0
+		return e
+	def __contains__(self, item):
+		return item in self.A[self.start:]
 
 # Program Starts
 
@@ -59,9 +59,9 @@ class State():
 
 	def isValid(self):
 		if self.misLeft >= 0 and self.misRight >= 0 \
-                   and self.canLeft >= 0 and self.canRight >= 0 \
-                   and (self.misLeft == 0 or self.misLeft >= self.canLeft) \
-                   and (self.misRight == 0 or self.misRight >= self.canRight):
+				   and self.canLeft >= 0 and self.canRight >= 0 \
+				   and (self.misLeft == 0 or self.misLeft >= self.canLeft) \
+				   and (self.misRight == 0 or self.misRight >= self.canRight):
 			return True
 		else:
 			return False
@@ -140,8 +140,10 @@ def createStates(current_state):
 
 def BFS():
 	# Set up inital condition. 3 Cannibals and Missionaries on the left
-	CannibalsStart = input("Enter number of cannibals: ")
-	initialState = State(CannibalsStart,CannibalsStart,'left',0, 0)
+	print "Enter cannibals and Missionaries separated by commas (3,3): "
+	items = [x for x in raw_input().split(',')]
+
+	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
 	if initialState.isGoal():
 		return initialState
 	frontier = FIFOQueue()
@@ -176,8 +178,8 @@ def printSolution(solution):
 		for i in range(pathSize):
 			state = path[pathSize-i-1]
 			print "(" + str(state.canLeft) + "," + str(state.misLeft) \
-                              + "," + state.ship + "," + str(state.canRight) + "," + \
-                              str(state.misRight) + ")"
+							  + "," + state.ship + "," + str(state.canRight) + "," + \
+							  str(state.misRight) + ")"
 		print "Number of states = " + str(pathSize-1)
 
 def main():
