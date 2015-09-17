@@ -1,4 +1,7 @@
 import math
+import matplotlib.pyplot as plt
+import networkx as nx
+
 
 #______________________________________________________________________________
 # Queues: FIFOQueue (source: http://aima-python.googlecode.com/svn/trunk/utils.py)
@@ -79,6 +82,11 @@ class State():
 		return (self.canLeft == other.canLeft) and (self.misLeft == other.misLeft)\
 					and (self.ship == other.ship) and (self.canRight == other.canRight)\
 					and (self.misRight == other.misRight)
+	def __str__(self):
+		return "(" + str(self.canLeft) + "," + str(self.misLeft) \
+						+ "," + self.ship + "," + str(self.canRight) + "," + \
+						str(self.misRight) + ")"
+
 
 def createStates(current_state):
 	children = [];
@@ -89,30 +97,35 @@ def createStates(current_state):
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'r')
 		# Two Cannibals to the rigth
 		newState = State(current_state.canLeft-2, current_state.misLeft, 'rigth',
 						current_state.canRight+2, current_state.misRight)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'r')
 		# One Cannibal and one Missionary to the rigth
 		newState = State(current_state.canLeft-1, current_state.misLeft-1, 'rigth',
 						current_state.canRight+1, current_state.misRight+1)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'r')
 		# One Missionary to the rigth
 		newState = State(current_state.canLeft, current_state.misLeft-1, 'rigth',
 						current_state.canRight, current_state.misRight+1)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'r')
 		# One Cannibal to the rigth
 		newState = State(current_state.canLeft-1, current_state.misLeft, 'rigth',
 						current_state.canRight+1, current_state.misRight)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'r')
 	else:
 		# Two Missionaries to the rigth
 		newState = State(current_state.canLeft, current_state.misLeft+2, 'left',
@@ -120,30 +133,35 @@ def createStates(current_state):
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'l')
 		# Two Cannibals to the left
 		newState = State(current_state.canLeft+2, current_state.misLeft, 'left',
 						current_state.canRight-2, current_state.misRight)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'l')
 		# One Cannibal and one Missionary to the left
 		newState = State(current_state.canLeft+1, current_state.misLeft+1, 'left',
 						current_state.canRight-1, current_state.misRight-1)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'l')
 		# One Missionary to the rigth
 		newState = State(current_state.canLeft, current_state.misLeft+1, 'left',
 						current_state.canRight, current_state.misRight-1)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'l')
 		# One Cannibal to the rigth
 		newState = State(current_state.canLeft+1, current_state.misLeft, 'left',
 						current_state.canRight-1, current_state.misRight)
 		if newState.isValid():
 			newState.parent = current_state
 			children.append(newState)
+			G.add_edge(current_state, newState, direc = 'l')
 	return children
 
 def BFS():
@@ -152,15 +170,18 @@ def BFS():
 	items = [x for x in raw_input().split(',')]
 
 	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
+	global G
+	G = nx.DiGraph()
 	if initialState.isGoal():
 		return initialState
 	frontier = FIFOQueue()
 	"""
 		A set is an unordered data type with no repited elements.
-		It always for easy comparision of membership
+		It always use for easy comparision of membership
 	"""
 	explored = set()
 	frontier.enqueue(initialState)
+	G.add_node(initialState)
 	while frontier:
 		state = frontier.dequeue()
 		explored.add(state)
@@ -197,6 +218,11 @@ def main():
 	print "(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)"
 	if solution is not None:
 		printSolution(solution)
+		pos = nx.circular_layout(G)
+		nx.draw_networkx(G,pos)		
+		figManager = plt.get_current_fig_manager()
+		figManager.window.showMaximized()
+		plt.show()
 	else:
 		print "No solution"
 
