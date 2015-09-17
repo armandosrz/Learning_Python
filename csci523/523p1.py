@@ -72,6 +72,14 @@ class State():
 		else:
 			return False
 
+	def __hash__(self):
+		return hash((self.canLeft, self.misLeft, self.ship, self.canRight, self.misRight))
+
+	def __eq__(self, other):
+		return (self.canLeft == other.canLeft) and (self.misLeft == other.misLeft)\
+					and (self.ship == other.ship) and (self.canRight == other.canRight)\
+					and (self.misRight == other.misRight)
+
 def createStates(current_state):
 	children = [];
 	if current_state.ship == 'left':
@@ -155,7 +163,11 @@ def BFS():
 	frontier.enqueue(initialState)
 	while frontier:
 		state = frontier.dequeue()
+		print "---(" + str(state.canLeft) + "," + str(state.misLeft) \
+						+ "," + state.ship + "," + str(state.canRight) + "," + \
+						str(state.misRight) + ")"
 		explored.add(state)
+		print len(explored)
 		children = createStates(state)
 		for child in children:
 			if (child not in explored) or (child not in frontier):
@@ -180,13 +192,16 @@ def printSolution(solution):
 			print "(" + str(state.canLeft) + "," + str(state.misLeft) \
 							  + "," + state.ship + "," + str(state.canRight) + "," + \
 							  str(state.misRight) + ")"
-		print "Number of states = " + str(pathSize-1)
+		print "Number of trips = " + str(pathSize-1)
 
 def main():
 	solution = BFS()
 	print "Missionaries and Cannibals solution:"
 	print "(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)"
-	printSolution(solution)
+	if solution is not None:
+		printSolution(solution)
+	else:
+		print "No solution"
 
 if __name__ == '__main__':
   main()
