@@ -171,7 +171,7 @@ def BFS():
 
 	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
 	global G
-	G = nx.MultiGraph()
+	G = nx.DiGraph()
 	if initialState.isGoal():
 		return initialState
 	frontier = FIFOQueue()
@@ -218,10 +218,10 @@ def main():
 	print "(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)"
 	if solution is not None:
 		printSolution(solution)
-		pos = nx.shell_layout(G)
+		pos = nx.circular_layout(G)
 		nx.draw_networkx(G,pos)
-		mng = plt.get_current_fig_manager()
-		mng.window.state('zoomed')
+		figManager = plt.get_current_fig_manager()
+		figManager.window.showMaximized()
 		plt.show()
 	else:
 		print "No solution"
