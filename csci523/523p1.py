@@ -163,18 +163,15 @@ def BFS():
 	frontier.enqueue(initialState)
 	while frontier:
 		state = frontier.dequeue()
-		print "---(" + str(state.canLeft) + "," + str(state.misLeft) \
-						+ "," + state.ship + "," + str(state.canRight) + "," + \
-						str(state.misRight) + ")"
 		explored.add(state)
-		print len(explored)
 		children = createStates(state)
 		for child in children:
-			if (child not in explored) or (child not in frontier):
+			if (child not in explored) or (child in frontier):
 				if state.isGoal():
 					return state
 				frontier.enqueue(child)
 	return None
+
 
 def printSolution(solution):
 
