@@ -219,7 +219,7 @@ def main():
 	if solution is not None:
 		printSolution(solution)
 		pos = nx.circular_layout(G)
-		nx.draw_networkx(G,pos)
+		nx.draw_networkx(G,pos)		
 		figManager = plt.get_current_fig_manager()
 		figManager.window.showMaximized()
 		plt.show()
