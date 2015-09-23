@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as plt
 import networkx as nx
+import sys
 
 
 #______________________________________________________________________________
@@ -89,95 +90,100 @@ class State():
 
 
 def createStates(current_state):
+
 	children = [];
+	i = shipCount
+	generatedSt = generatedStates
+
+
 	if current_state.ship == 'left':
 		# Two Missionaries to the rigth
-		newState = State(current_state.canLeft, current_state.misLeft-2, 'rigth',
-						current_state.canRight, current_state.misRight+2)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'r')
-		# Two Cannibals to the rigth
-		newState = State(current_state.canLeft-2, current_state.misLeft, 'rigth',
-						current_state.canRight+2, current_state.misRight)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'r')
-		# One Cannibal and one Missionary to the rigth
-		newState = State(current_state.canLeft-1, current_state.misLeft-1, 'rigth',
-						current_state.canRight+1, current_state.misRight+1)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'r')
-		# One Missionary to the rigth
-		newState = State(current_state.canLeft, current_state.misLeft-1, 'rigth',
-						current_state.canRight, current_state.misRight+1)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'r')
-		# One Cannibal to the rigth
-		newState = State(current_state.canLeft-1, current_state.misLeft, 'rigth',
-						current_state.canRight+1, current_state.misRight)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'r')
+
+		for x in xrange(shipCount+1):
+			newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
+							current_state.canRight+x, current_state.misRight+i)
+			#print(str(x) + '-' + str(i))
+			if newState.isValid():
+				#print('Valid')
+				newState.parent = current_state
+				children.append(newState)
+				G.add_edge(current_state, newState, direc = 'r')
+			i = i-1
+			generatedSt += 1
+		for x in xrange(1,shipCount):
+			newState = State(current_state.canLeft-x, current_state.misLeft, 'rigth',
+							current_state.canRight+x, current_state.misRight)
+			#print(str(x))
+			if newState.isValid():
+				#print('Valid')
+				newState.parent = current_state
+				children.append(newState)
+				G.add_edge(current_state, newState, direc = 'r')
+			generatedSt += 1
+		for x in xrange(1, shipCount):
+			newState = State(current_state.canLeft, current_state.misLeft-x, 'rigth',
+							current_state.canRight, current_state.misRight+x)
+			#print(str(x))
+			if newState.isValid():
+				#print('Valid')
+				newState.parent = current_state
+				children.append(newState)
+				G.add_edge(current_state, newState, direc = 'r')
+			generatedSt += 1
+
 	else:
-		# Two Missionaries to the rigth
-		newState = State(current_state.canLeft, current_state.misLeft+2, 'left',
-						current_state.canRight, current_state.misRight-2)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'l')
-		# Two Cannibals to the left
-		newState = State(current_state.canLeft+2, current_state.misLeft, 'left',
-						current_state.canRight-2, current_state.misRight)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'l')
-		# One Cannibal and one Missionary to the left
-		newState = State(current_state.canLeft+1, current_state.misLeft+1, 'left',
-						current_state.canRight-1, current_state.misRight-1)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'l')
-		# One Missionary to the rigth
-		newState = State(current_state.canLeft, current_state.misLeft+1, 'left',
-						current_state.canRight, current_state.misRight-1)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'l')
-		# One Cannibal to the rigth
-		newState = State(current_state.canLeft+1, current_state.misLeft, 'left',
-						current_state.canRight-1, current_state.misRight)
-		if newState.isValid():
-			newState.parent = current_state
-			children.append(newState)
-			G.add_edge(current_state, newState, direc = 'l')
+		for x in xrange(shipCount+1):
+			newState = State(current_state.canLeft+x, current_state.misLeft+i, 'left',
+							current_state.canRight-x, current_state.misRight-i)
+			if newState.isValid():
+				#print('Valid')
+				newState.parent = current_state
+				children.append(newState)
+				G.add_edge(current_state, newState, direc = 'r')
+			i = i - 1
+			generatedSt += 1
+		for x in xrange(1, shipCount):
+			newState = State(current_state.canLeft+x, current_state.misLeft, 'left',
+							current_state.canRight-x, current_state.misRight)
+			if newState.isValid():
+				#print('Valid')
+				newState.parent = current_state
+				children.append(newState)
+				G.add_edge(current_state, newState, direc = 'r')
+			generatedSt += 1
+		for x in xrange(1, shipCount):
+			newState = State(current_state.canLeft, current_state.misLeft+x, 'left',
+							current_state.canRight, current_state.misRight-x)
+			if newState.isValid():
+				#print('Valid')
+				newState.parent = current_state
+				children.append(newState)
+				G.add_edge(current_state, newState, direc = 'r')
+			generatedSt += 1
+	global generatedStates
+	generatedStates = generatedSt
 	return children
 
 def BFS():
+	global G #Graph to be displayed
+	global shipCount #Capacity of the boat
+	global generatedStates
+
 	# Set up inital condition. 3 Cannibals and Missionaries on the left
 	print "Enter cannibals and Missionaries separated by commas (3,3): "
 	items = [x for x in raw_input().split(',')]
-
+	shipCount = int(raw_input('Enter number of seats on the boat: '))
+	generatedStatesLimit = int(raw_input('Enter Limit num of generatedStates: '))
+	generatedStates = 1
 	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
-	global G
+
 	G = nx.DiGraph()
 	if initialState.isGoal():
 		return initialState
 	frontier = FIFOQueue()
 	"""
 		A set is an unordered data type with no repited elements.
-		It always use for easy comparision of membership
+		It is use for easy comparision of membership
 	"""
 	explored = set()
 	frontier.enqueue(initialState)
@@ -191,6 +197,9 @@ def BFS():
 				if state.isGoal():
 					return state
 				frontier.enqueue(child)
+		if generatedStatesLimit < generatedStates:
+			print('States Limit reached.')
+			sys.exit()
 	return None
 
 
@@ -212,19 +221,24 @@ def printSolution(solution):
 							  str(state.misRight) + ")"
 		print "Number of trips = " + str(pathSize-1)
 
+
 def main():
 	solution = BFS()
 	print "Missionaries and Cannibals solution:"
 	print "(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)"
 	if solution is not None:
 		printSolution(solution)
+		"""
+			Setting up the Graph to be displayed.
+		"""
 		pos = nx.circular_layout(G)
-		nx.draw_networkx(G,pos)		
+		nx.draw_networkx(G,pos)
 		figManager = plt.get_current_fig_manager()
 		figManager.window.showMaximized()
 		plt.show()
 	else:
-		print "No solution"
+		print 'No solution.'
+	print "Number of nodes generated: " + str(generatedStates)
 
 if __name__ == '__main__':
   main()
