@@ -101,14 +101,15 @@ def createStates(current_state):
 		# Generate conbinations where the addition of both elements will always be
 		# equal to the number of seats on the boat
 		for x in xrange(shipCount+1):
-			newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
-							current_state.canRight+x, current_state.misRight+i)
-			#print(str(x) + '-' + str(i))
-			if newState.isValid():
-				#print('Valid')
-				newState.parent = current_state
-				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
+			if(i == 0 or i>=x):
+				newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
+								current_state.canRight+x, current_state.misRight+i)
+				#print(str(x) + '-' + str(i))
+				if newState.isValid():
+					#print('Valid')
+					newState.parent = current_state
+					children.append(newState)
+					G.add_edge(current_state, newState, direc = 'r')
 			i = i-1
 			generatedSt += 1
 		# Cannibals to the right with no Missionaries
@@ -136,13 +137,14 @@ def createStates(current_state):
 
 	else:
 		for x in xrange(shipCount+1):
-			newState = State(current_state.canLeft+x, current_state.misLeft+i, 'left',
-							current_state.canRight-x, current_state.misRight-i)
-			if newState.isValid():
-				#print('Valid')
-				newState.parent = current_state
-				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
+			if(i == 0 or i>=x):
+				newState = State(current_state.canLeft+x, current_state.misLeft+i, 'left',
+								current_state.canRight-x, current_state.misRight-i)
+				if newState.isValid():
+					#print('Valid')
+					newState.parent = current_state
+					children.append(newState)
+					G.add_edge(current_state, newState, direc = 'r')
 			i = i - 1
 			generatedSt += 1
 		for x in xrange(1, shipCount):
