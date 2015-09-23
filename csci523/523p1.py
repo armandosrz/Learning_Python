@@ -52,7 +52,7 @@ class State():
 		self.ship = ship
 		self.canRight = canRight
 		self.misRight = misRight
-		self.parent = None
+		self.parent = None  #Pointer to parent state Generated
 
 
 	""" The python parser reads logical lines which are terminated when a new
@@ -93,12 +93,13 @@ def createStates(current_state):
 
 	children = [];
 	i = shipCount
+	global generatedStates
 	generatedSt = generatedStates
 
 
 	if current_state.ship == 'left':
-		# Two Missionaries to the rigth
-
+		# Generate conbinations where the addition of both elements will always be
+		# equal to the number of seats on the boat
 		for x in xrange(shipCount+1):
 			newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
 							current_state.canRight+x, current_state.misRight+i)
@@ -110,6 +111,7 @@ def createStates(current_state):
 				G.add_edge(current_state, newState, direc = 'r')
 			i = i-1
 			generatedSt += 1
+		# Cannibals to the right with no Missionaries
 		for x in xrange(1,shipCount):
 			newState = State(current_state.canLeft-x, current_state.misLeft, 'rigth',
 							current_state.canRight+x, current_state.misRight)
@@ -120,6 +122,7 @@ def createStates(current_state):
 				children.append(newState)
 				G.add_edge(current_state, newState, direc = 'r')
 			generatedSt += 1
+		# Missionaries to the right with no Cannibals
 		for x in xrange(1, shipCount):
 			newState = State(current_state.canLeft, current_state.misLeft-x, 'rigth',
 							current_state.canRight, current_state.misRight+x)
@@ -167,17 +170,19 @@ def createStates(current_state):
 def BFS():
 	global G #Graph to be displayed
 	global shipCount #Capacity of the boat
-	global generatedStates
+	global generatedStates #Num of total states Generated.
 
-	# Set up inital condition. 3 Cannibals and Missionaries on the left
+	# Set up inital condition.
+	# Ask for all requiered input.
 	print "Enter cannibals and Missionaries separated by commas (3,3): "
 	items = [x for x in raw_input().split(',')]
 	shipCount = int(raw_input('Enter number of seats on the boat: '))
 	generatedStatesLimit = int(raw_input('Enter Limit num of generatedStates: '))
 	generatedStates = 1
 	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
-
+	#Instiantiate Graph
 	G = nx.DiGraph()
+
 	if initialState.isGoal():
 		return initialState
 	frontier = FIFOQueue()
