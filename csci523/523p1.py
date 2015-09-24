@@ -99,22 +99,24 @@ def createStates(current_state):
 		# Generate conbinations where the addition of both elements will always be
 		# equal to the number of seats on the boat
 		for x in xrange(shipCount+1):
-			newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
-							current_state.canRight+x, current_state.misRight+i)
-			#print(str(x) + '-' + str(i))
-			if newState.isValid():
-				#print('Valid')
-				newState.parent = current_state
-				children.append(newState)
+			if (i == 0 or i >= x):  # only generate states where c is equal or less than
+								  # m on the both
+				newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
+								current_state.canRight+x, current_state.misRight+i)
+				print(str(x) + '-' + str(i))
+				if newState.isValid():
+					print(newState)
+					newState.parent = current_state
+					children.append(newState)
+				generatedSt += 1
 			i = i-1
-			generatedSt += 1
 		# Cannibals to the right with no Missionaries
 		for x in xrange(1,shipCount):
 			newState = State(current_state.canLeft-x, current_state.misLeft, 'rigth',
 							current_state.canRight+x, current_state.misRight)
 			#print(str(x))
 			if newState.isValid():
-				#print('Valid')
+				print(newState)
 				newState.parent = current_state
 				children.append(newState)
 			generatedSt += 1
@@ -124,21 +126,22 @@ def createStates(current_state):
 							current_state.canRight, current_state.misRight+x)
 			#print(str(x))
 			if newState.isValid():
-				#print('Valid')
+				print(newState)
 				newState.parent = current_state
 				children.append(newState)
 			generatedSt += 1
 
 	else:
 		for x in xrange(shipCount+1):
-			newState = State(current_state.canLeft+x, current_state.misLeft+i, 'left',
-							current_state.canRight-x, current_state.misRight-i)
-			if newState.isValid():
-				#print('Valid')
-				newState.parent = current_state
-				children.append(newState)
+			if (i == 0 or i >= x):
+				newState = State(current_state.canLeft+x, current_state.misLeft+i, 'left',
+								current_state.canRight-x, current_state.misRight-i)
+				if newState.isValid():
+					#print('Valid')
+					newState.parent = current_state
+					children.append(newState)
+				generatedSt += 1
 			i = i - 1
-			generatedSt += 1
 		for x in xrange(1, shipCount):
 			newState = State(current_state.canLeft+x, current_state.misLeft, 'left',
 							current_state.canRight-x, current_state.misRight)
@@ -188,8 +191,8 @@ def BFS():
 		children = createStates(state)
 		for child in children:
 			if (child not in explored) or (child in frontier):
-				if state.isGoal():
-					return state
+				if child.isGoal():
+					return child
 				frontier.enqueue(child)
 		if generatedStatesLimit < generatedStates:
 			print('States Limit reached.')
