@@ -62,7 +62,7 @@ Known bugs:
 	This does not affect the performance of the program. I am still learning
 	about globals in python.
 
-Exta:
+Extra:
 	My program generates and displays a graph of the generated States and the
 	connection with parent and sons states.
 
