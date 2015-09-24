@@ -5,8 +5,7 @@ Javier Armando Suarez Rivas
 											Program 1: Cannibals and Missionaries
 
 Language: Python
-Compiler: The Python Networkx libraty is needed.
-					To install do in termanil: 'pip install networkx'
+Compiler: python 523p1.py
 
 Data Structure/State Representation:
 		State():

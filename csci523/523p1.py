@@ -108,7 +108,6 @@ def createStates(current_state):
 				#print('Valid')
 				newState.parent = current_state
 				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
 			i = i-1
 			generatedSt += 1
 		# Cannibals to the right with no Missionaries
@@ -120,7 +119,6 @@ def createStates(current_state):
 				#print('Valid')
 				newState.parent = current_state
 				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
 			generatedSt += 1
 		# Missionaries to the right with no Cannibals
 		for x in xrange(1, shipCount):
@@ -131,7 +129,6 @@ def createStates(current_state):
 				#print('Valid')
 				newState.parent = current_state
 				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
 			generatedSt += 1
 
 	else:
@@ -142,7 +139,6 @@ def createStates(current_state):
 				#print('Valid')
 				newState.parent = current_state
 				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
 			i = i - 1
 			generatedSt += 1
 		for x in xrange(1, shipCount):
@@ -152,7 +148,6 @@ def createStates(current_state):
 				#print('Valid')
 				newState.parent = current_state
 				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
 			generatedSt += 1
 		for x in xrange(1, shipCount):
 			newState = State(current_state.canLeft, current_state.misLeft+x, 'left',
@@ -161,14 +156,12 @@ def createStates(current_state):
 				#print('Valid')
 				newState.parent = current_state
 				children.append(newState)
-				G.add_edge(current_state, newState, direc = 'r')
 			generatedSt += 1
 	global generatedStates
 	generatedStates = generatedSt
 	return children
 
 def BFS():
-	global G #Graph to be displayed
 	global shipCount #Capacity of the boat
 	global generatedStates #Num of total states Generated.
 
@@ -180,8 +173,6 @@ def BFS():
 	generatedStatesLimit = int(raw_input('Enter Limit num of generatedStates: '))
 	generatedStates = 1
 	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
-	#Instiantiate Graph
-	G = nx.DiGraph()
 
 	if initialState.isGoal():
 		return initialState
@@ -192,7 +183,7 @@ def BFS():
 	"""
 	explored = set()
 	frontier.enqueue(initialState)
-	G.add_node(initialState)
+
 	while frontier:
 		state = frontier.dequeue()
 		explored.add(state)
@@ -233,14 +224,6 @@ def main():
 	print "(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)"
 	if solution is not None:
 		printSolution(solution)
-		"""
-			Setting up the Graph to be displayed.
-		"""
-		pos = nx.circular_layout(G)
-		nx.draw_networkx(G,pos)
-		figManager = plt.get_current_fig_manager()
-		figManager.window.showMaximized()
-		plt.show()
 	else:
 		print 'No solution.'
 	print "Number of nodes generated: " + str(generatedStates)
