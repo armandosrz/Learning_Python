@@ -2,7 +2,7 @@ CSCI 531: Artificial Intelligence
 Section 1
 Javier Armando Suarez Rivas
 
-											Program 1: Cannibals and Missionaries
+			Program 1: Cannibals and Missionaries
 
 Language: Python
 Compiler: python 523p1.py
