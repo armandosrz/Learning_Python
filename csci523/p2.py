@@ -2,45 +2,6 @@ import math
 import sys
 
 
-#______________________________________________________________________________
-# Queues: FIFOQueue (source: http://aima-python.googlecode.com/svn/trunk/utils.py)
-
-class Queue:
-	"""Queue is an abstract class/interface.
-	Supports the following methods and functions:
-		q.append(item)  -- add an item to the queue
-		q.extend(items) -- equivalent to: for item in items: q.append(item)
-		q.pop()         -- return the top item from the queue
-		len(q)          -- number of items in q (also q.__len())
-		item in q       -- does q contain item?
-	If Python ever gets interfaces, Queue will be an interface."""
-
-	def __init__(self):
-		abstract
-
-	def extend(self, items):
-		for item in items: self.append(item)
-
-class FIFOQueue(Queue):
-	"""A First-In-First-Out Queue."""
-	def __init__(self):
-		self.A = []; self.start = 0
-	def enqueue(self, item):
-		self.A.append(item)
-	def __len__(self):
-		return len(self.A) - self.start
-	def extend(self, items):
-		self.A.extend(items)
-	def dequeue(self):
-		e = self.A[self.start]
-		self.start += 1
-		if self.start > 5 and self.start > len(self.A)/2:
-			self.A = self.A[self.start:]
-			self.start = 0
-		return e
-	def __contains__(self, item):
-		return item in self.A[self.start:]
-
 # Program Starts
 
 class State():
@@ -87,80 +48,7 @@ class State():
 						str(self.misRight) + ")"
 
 
-def createStates(current_state):
 
-	children = [];
-	i = shipCount
-	global generatedStates
-	generatedSt = generatedStates
-
-
-	if current_state.ship == 'left':
-		# Generate conbinations where the addition of both elements will always be
-		# equal to the number of seats on the boat
-		for x in xrange(shipCount+1):
-			if (i == 0 or i >= x):  # only generate states where c is equal or less than
-								  # m on the both
-				newState = State(current_state.canLeft-x, current_state.misLeft-i, 'rigth',
-								current_state.canRight+x, current_state.misRight+i)
-				#print(str(x) + '-' + str(i))
-				if newState.isValid():
-					#print(newState)
-					newState.parent = current_state
-					children.append(newState)
-				generatedSt += 1
-			i = i-1
-		# Cannibals to the right with no Missionaries
-		for x in xrange(1,shipCount):
-			newState = State(current_state.canLeft-x, current_state.misLeft, 'rigth',
-							current_state.canRight+x, current_state.misRight)
-			#print(str(x))
-			if newState.isValid():
-				#print(newState)
-				newState.parent = current_state
-				children.append(newState)
-			generatedSt += 1
-		# Missionaries to the right with no Cannibals
-		for x in xrange(1, shipCount):
-			newState = State(current_state.canLeft, current_state.misLeft-x, 'rigth',
-							current_state.canRight, current_state.misRight+x)
-			#print(str(x))
-			if newState.isValid():
-				#print(newState)
-				newState.parent = current_state
-				children.append(newState)
-			generatedSt += 1
-
-	else:
-		for x in xrange(shipCount+1):
-			if (i == 0 or i >= x):
-				newState = State(current_state.canLeft+x, current_state.misLeft+i, 'left',
-								current_state.canRight-x, current_state.misRight-i)
-				if newState.isValid():
-					#print('Valid')
-					newState.parent = current_state
-					children.append(newState)
-				generatedSt += 1
-			i = i - 1
-		for x in xrange(1, shipCount):
-			newState = State(current_state.canLeft+x, current_state.misLeft, 'left',
-							current_state.canRight-x, current_state.misRight)
-			if newState.isValid():
-				#print('Valid')
-				newState.parent = current_state
-				children.append(newState)
-			generatedSt += 1
-		for x in xrange(1, shipCount):
-			newState = State(current_state.canLeft, current_state.misLeft+x, 'left',
-							current_state.canRight, current_state.misRight-x)
-			if newState.isValid():
-				#print('Valid')
-				newState.parent = current_state
-				children.append(newState)
-			generatedSt += 1
-	global generatedStates
-	generatedStates = generatedSt
-	return children
 
 def BFS():
 	global shipCount #Capacity of the boat
