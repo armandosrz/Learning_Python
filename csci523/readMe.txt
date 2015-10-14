@@ -61,6 +61,8 @@ Known bugs:
 		'SyntaxWarning: name 'generatedStates' is used prior to global declaration'
 	This does not affect the performance of the program. I am still learning
 	about globals in python.
+	Some of the special cases come out with no solution even though Wikipedia
+	says it should be one. This part was not required for undergrads
 
 Extra:
 	My program generates and displays a graph of the generated States and the
@@ -87,7 +89,8 @@ Sample Runs:
 		(2,0,left,1,3)
 		(0,0,rigth,3,3)
 		Number of trips = 11
-		Number of nodes generated: 126
+		Number of nodes generated: 106
+
 	2:
 		Enter cannibals and Missionaries separated by commas (3,3):
 		10,10
@@ -96,25 +99,11 @@ Sample Runs:
 		States Limit reached.
 	3:
 		Enter cannibals and Missionaries separated by commas (3,3):
-		6,6
+		10,10
 		Enter number of seats on the boat: 4
-		Enter Limit num of generatedStates: 100000
-		Missionaries and Cannibals solution:
-		(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)
-		(6,6,left,0,0)
-		(4,4,rigth,2,2)
-		(4,6,left,2,0)
-		(0,6,rigth,6,0)
-		(2,6,left,4,0)
-		(2,2,rigth,4,4)
-		(4,4,left,2,2)
-		(4,0,rigth,2,6)
-		(5,0,left,1,6)
-		(1,0,rigth,5,6)
-		(2,0,left,4,6)
-		(0,0,rigth,6,6)
-		Number of trips = 11
-		Number of nodes generated: 3829
+		Enter Limit num of generatedStates: 1000
+		States Limit reached.
+
 	4:
 		Enter cannibals and Missionaries separated by commas (3,3):
 		1,4
@@ -131,13 +120,38 @@ Sample Runs:
 		(1,1,left,0,3)
 		(0,0,rigth,1,4)
 		Number of trips = 7
-		Number of nodes generated: 281
+		Number of nodes generated: 176
+
 	5:
 		Enter cannibals and Missionaries separated by commas (3,3):
-		4,4
-		Enter number of seats on the boat: 2
+		6,6
+		Enter number of seats on the boat: 4
+		Enter Limit num of generatedStates: 10000
+		Missionaries and Cannibals solution:
+		(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)
+		(6,6,left,0,0)
+		(4,4,rigth,2,2)
+		(4,6,left,2,0)
+		(0,6,rigth,6,0)
+		(2,6,left,4,0)
+		(2,2,rigth,4,4)
+		(4,4,left,2,2)
+		(4,0,rigth,2,6)
+		(5,0,left,1,6)
+		(1,0,rigth,5,6)
+		(2,0,left,4,6)
+		(0,0,rigth,6,6)
+		Number of trips = 11
+		Number of nodes generated: 1721
+	6:
+		** According to wikipedia, with 3 in the boat 5 couples could cross **
+		** The number of generated states is decreased so that the cannibals
+		** On the boat are always equal or less than the Missionaries       **
+		Enter cannibals and Missionaries separated by commas (3,3):
+		5,5
+		Enter number of seats on the boat: 3
 		Enter Limit num of generatedStates: 1000
 		Missionaries and Cannibals solution:
 		(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)
 		No solution.
-		Number of nodes generated: 91
+		Number of nodes generated: 176
