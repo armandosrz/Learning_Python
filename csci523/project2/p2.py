@@ -22,6 +22,9 @@ class State(object):
 	def __hash__(self):
 		return hash(tuple(self.matrix))
 
+	def __cmp__(self, other):
+		return cmp(self.f, other.f)
+
 	def __str__(self):
 		print = ''
 		for i, j in enumerate(self.matrix):
@@ -54,7 +57,7 @@ def createStatesManhatan(current_state):
 		if newState.parent is None:
 			newState.g = 0
 		else:
-			newState.g = newState.parent.g
+			newState.g = newState.parent.g+1
 		newState.f = newState.getF()
 		children.append(newState)
 	# Down
@@ -65,10 +68,10 @@ def createStatesManhatan(current_state):
 		if newState.parent is None:
 			newState.g = 0
 		else:
-			newState.g = newState.parent.g
+			newState.g = newState.parent.g+1
 		newState.f = newState.getF()
 		children.append(newState)
-
+	# Left
 	newArray = left(current_state.matrix, zeroPosition)
 	if newArray not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
@@ -76,10 +79,10 @@ def createStatesManhatan(current_state):
 		if newState.parent is None:
 			newState.g = 0
 		else:
-			newState.g = newState.parent.g
+			newState.g = newState.parent.g+1
 		newState.f = newState.getF()
 		children.append(newState)
-
+	# Right
 	newArray = right(current_state.matrix, zeroPosition)
 	if newArray not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
@@ -87,12 +90,12 @@ def createStatesManhatan(current_state):
 		if newState.parent is None:
 			newState.g = 0
 		else:
-			newState.g = newState.parent.g
+			newState.g = newState.parent.g+1
 		newState.f = newState.getF()
 		children.append(newState)
 
 	return children
-	
+
 def up(matrix, zeroIndex):
 	if zeroIndex > 2:
 		temp = matrix[z]
@@ -146,9 +149,8 @@ def manhathanDistance(matrix):
 			manhathan += abs(yMatrix - yGoal) + abs(xMatrix, xGoal)
 	return manhathan
 
-def BFS():
-	global shipCount #Capacity of the boat
-	global generatedStates #Num of total states Generated.
+def AStar():
+
 
 	# Set up inital condition.
 	# Ask for all requiered input.
