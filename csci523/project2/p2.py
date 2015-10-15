@@ -1,6 +1,7 @@
 import math
 import sys
-from FIFOQueue import FifoQueue
+import PRIORITYQueue as pq
+
 
 
 # Program Starts
@@ -26,12 +27,12 @@ class State(object):
 		return cmp(self.f, other.f)
 
 	def __str__(self):
-		print = ''
+		toPrint = ''
 		for i, j in enumerate(self.matrix):
-			print += '{0:^3}|'.format(j)
+			toPrint += '{0:^3}|'.format(j)
 			if i == 2 or i == 5:
-				print += '\n'
-		return print
+				toPrint += '\n'
+		return toPrint
 	def isGoal(self):
 		goalStr = "123456780"
 		goal = map(int, list(goalStr))
@@ -149,21 +150,24 @@ def manhathanDistance(matrix):
 			manhathan += abs(yMatrix - yGoal) + abs(xMatrix, xGoal)
 	return manhathan
 
+
+
 def AStar():
-
-
 	# Set up inital condition.
 	# Ask for all requiered input.
-	print "Enter cannibals and Missionaries separated by commas (3,3): "
-	items = [x for x in raw_input().split(',')]
-	shipCount = int(raw_input('Enter number of seats on the boat: '))
-	generatedStatesLimit = int(raw_input('Enter Limit num of generatedStates: '))
-	generatedStates = 1
-	initialState = State(int(items[0]),int(items[1]),'left',0, 0)
+
+	matrix = list("123456780")
+		randmatrix = []
+		for i in range(len(matrix)):
+			index = randint(0, len(matrix)-1)
+			randmatrix.append(int(matrix.pop(index)))
+
+	initialState = State(randmatrix)
+	print initialState
 
 	if initialState.isGoal():
 		return initialState
-	frontier = FIFOQueue()
+	frontier = pq()
 	"""
 		A set is an unordered data type with no repited elements.
 		It is use for easy comparision of membership
@@ -174,12 +178,19 @@ def AStar():
 	while frontier:
 		state = frontier.dequeue()
 		explored.add(state)
-		children = createStates(state)
+		if state.isGoal():
+			return state
+		children = createStatesManhatan(state)
 		for child in children:
-			if (child not in explored) or (child in frontier):
-				if child.isGoal():
-					return child
+			if (child not in explored) or (child not in frontier):
 				frontier.enqueue(child)
+			if child in explored:
+				continue
+			if child in frontier:
+				if frontier.__getitem__(child).frecuency > child.frecuency:
+					frontier.__delitem__(child)
+					frontier.enqueue(child)
+
 		if generatedStatesLimit < generatedStates:
 			print('States Limit reached.')
 			sys.exit()
@@ -199,16 +210,13 @@ def printSolution(solution):
 
 		for i in range(pathSize):
 			state = path[pathSize-i-1]
-			print "(" + str(state.canLeft) + "," + str(state.misLeft) \
-							  + "," + state.ship + "," + str(state.canRight) + "," + \
-							  str(state.misRight) + ")"
+			print state
 		print "Number of trips = " + str(pathSize-1)
 
 
 def main():
-	solution = BFS()
-	print "Missionaries and Cannibals solution:"
-	print "(cannibalLeft,missionaryLeft,boat,cannibalRight,missionaryRight)"
+	solution = AStar()
+	print "A Star using manhathanDistance:"
 	if solution is not None:
 		printSolution(solution)
 	else:
