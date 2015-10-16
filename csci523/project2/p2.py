@@ -1,6 +1,7 @@
 import math
 import sys
-import PRIORITYQueue as pq
+from PRIORITYQueue import PriorityQueue
+from random import randint
 
 
 
@@ -19,13 +20,16 @@ class State(object):
 	def __eq__(self, other):
 		if isinstance(other, State):
 			return self.matrix == other.matrix
+	def __ne__(self, other):
+		return not self.__eq__(other)
 
 	def __hash__(self):
-		return hash(tuple(self.matrix))
+		return int(self.to_string())
 
 	def __cmp__(self, other):
 		return cmp(self.f, other.f)
-
+	def __repr__(self):
+		return self.__str__()
 	def __str__(self):
 		toPrint = ''
 		for i, j in enumerate(self.matrix):
@@ -33,6 +37,9 @@ class State(object):
 			if i == 2 or i == 5:
 				toPrint += '\n'
 		return toPrint
+	def to_string(self):
+		return ''.join(map(str, self.matrix))
+
 	def isGoal(self):
 		goalStr = "123456780"
 		goal = map(int, list(goalStr))
@@ -42,7 +49,7 @@ class State(object):
 			return False
 	def zeroIndex(self):
 		return self.matrix.index(0)
-	def getF():
+	def getF(self):
 		return self.h + self.g
 
 
@@ -52,9 +59,9 @@ def createStatesManhatan(current_state):
 
 	# Up
 	newArray = up(current_state.matrix, zeroPosition)
-	if newArray not None:
+	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(matrix)
+		newState.h = manhathanDistance(newArray)
 		if newState.parent is None:
 			newState.g = 0
 		else:
@@ -63,9 +70,9 @@ def createStatesManhatan(current_state):
 		children.append(newState)
 	# Down
 	newArray = down(current_state.matrix, zeroPosition)
-	if newArray not None:
+	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(matrix)
+		newState.h = manhathanDistance(newArray)
 		if newState.parent is None:
 			newState.g = 0
 		else:
@@ -74,9 +81,9 @@ def createStatesManhatan(current_state):
 		children.append(newState)
 	# Left
 	newArray = left(current_state.matrix, zeroPosition)
-	if newArray not None:
+	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(matrix)
+		newState.h = manhathanDistance(newArray)
 		if newState.parent is None:
 			newState.g = 0
 		else:
@@ -85,9 +92,9 @@ def createStatesManhatan(current_state):
 		children.append(newState)
 	# Right
 	newArray = right(current_state.matrix, zeroPosition)
-	if newArray not None:
+	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(matrix)
+		newState.h = manhathanDistance(newArray)
 		if newState.parent is None:
 			newState.g = 0
 		else:
@@ -99,34 +106,34 @@ def createStatesManhatan(current_state):
 
 def up(matrix, zeroIndex):
 	if zeroIndex > 2:
-		temp = matrix[z]
-		matrix[z] = matrix[z-3]
-		matrix[z-3] = temp
+		temp = matrix[zeroIndex]
+		matrix[zeroIndex] = matrix[zeroIndex-3]
+		matrix[zeroIndex-3] = temp
 		return matrix
 	else:
 		return None
 
 def down(matrix, zeroIndex):
 	if zeroIndex < 6:
-		temp = matrix[z]
-		matrix[z] = matrix[z+3]
-		matrix[z+3] = temp
+		temp = matrix[zeroIndex]
+		matrix[zeroIndex] = matrix[zeroIndex+3]
+		matrix[zeroIndex+3] = temp
 		return matrix
 	else:
 		return None
 def right(matrix, zeroIndex):
-	if zeroIndex < not in [2,5,8]:
-		temp = matrix[z]
-		matrix[z] = matrix[z+1]
-		matrix[z+1] = temp
+	if zeroIndex not in [2,5,8]:
+		temp = matrix[zeroIndex]
+		matrix[zeroIndex] = matrix[zeroIndex+1]
+		matrix[zeroIndex+1] = temp
 		return matrix
 	else:
 		return None
 def left(matrix, zeroIndex):
-	if zeroIndex < not in [0,3,6]:
-		temp = matrix[z]
-		matrix[z] = matrix[z+1]
-		matrix[z+1] = temp
+	if zeroIndex not in [0,3,6]:
+		temp = matrix[zeroIndex]
+		matrix[zeroIndex] = matrix[zeroIndex+1]
+		matrix[zeroIndex+1] = temp
 		return matrix
 	else:
 		return None
@@ -147,7 +154,7 @@ def manhathanDistance(matrix):
 			yMatrix, xMatrix = divmod(posMatrix, 3)
 			posGoal = goal.index(num)
 			yGoal, xGoal = divmod(posGoal, 3)
-			manhathan += abs(yMatrix - yGoal) + abs(xMatrix, xGoal)
+			manhathan += abs(yMatrix - yGoal) + abs(xMatrix - xGoal)
 	return manhathan
 
 
@@ -157,25 +164,28 @@ def AStar():
 	# Ask for all requiered input.
 
 	matrix = list("123456780")
-		randmatrix = []
-		for i in range(len(matrix)):
-			index = randint(0, len(matrix)-1)
-			randmatrix.append(int(matrix.pop(index)))
-
-	initialState = State(randmatrix)
+	randmatrix = []
+	for i in range(len(matrix)):
+		index = randint(0, len(matrix)-1)
+		randmatrix.append(int(matrix.pop(index)))
+	m = map(int,list("123450786"))
+	initialState = State(m)
 	print initialState
 
 	if initialState.isGoal():
 		return initialState
-	frontier = pq()
+	frontier = PriorityQueue()
 	"""
 		A set is an unordered data type with no repited elements.
 		It is use for easy comparision of membership
 	"""
 	explored = set()
 	frontier.enqueue(initialState)
-
+	count  = 1
 	while frontier:
+		count += 1
+		if (count == 50):
+			break
 		state = frontier.dequeue()
 		explored.add(state)
 		if state.isGoal():
@@ -187,13 +197,12 @@ def AStar():
 			if child in explored:
 				continue
 			if child in frontier:
-				if frontier.__getitem__(child).frecuency > child.frecuency:
+				if frontier.__getitem__(child).f > child.f:
 					frontier.__delitem__(child)
 					frontier.enqueue(child)
-
-		if generatedStatesLimit < generatedStates:
-			print('States Limit reached.')
-			sys.exit()
+	for x in explored:
+		print x.to_string()
+		print
 	return None
 
 
@@ -218,10 +227,11 @@ def main():
 	solution = AStar()
 	print "A Star using manhathanDistance:"
 	if solution is not None:
-		printSolution(solution)
+		#printSolution(solution)
+		print "hey"
 	else:
 		print 'No solution.'
-	print "Number of nodes generated: " + str(generatedStates)
+
 
 if __name__ == '__main__':
   main()
