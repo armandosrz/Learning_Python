@@ -92,9 +92,10 @@ alan = test(45, "Albert")
 
 pq.enqueue(test(8, "ALAN"))
 pq.enqueue(test(4, "Tom"))
+pq.enqueue(test(4, "Leonard"))
 pq.enqueue(alan)
 
-allon = test(12, "Albert")
+allon = test(2, "Albert")
 
 if (pq.__contains__(allon)):
 	if pq.__getitem__(allon).frecuency > allon.frecuency:
