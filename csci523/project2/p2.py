@@ -59,14 +59,19 @@ class State(object):
 		return self.matrix.index(0)
 	def getF(self):
 		return self.h + self.g
+	def getMatrix(self):
+		return self.matrix
 
 
 def createStatesManhatan(current_state):
 	children = []
 	zeroPosition = current_state.zeroIndex()
-
+	mtrx = current_state.getMatrix()
 	# Up
-	newArray = up(current_state.matrix, zeroPosition)
+	print
+	print mtrx
+	newArray = up(current_state.getMatrix(), zeroPosition)
+	print newArray
 	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
 		newState.h = manhathanDistance(newArray)
@@ -77,7 +82,9 @@ def createStatesManhatan(current_state):
 		newState.f = newState.getF()
 		children.append(newState)
 	# Down
-	newArray = down(current_state.matrix, zeroPosition)
+	print current_state.getMatrix()
+	newArray = down(current_state.getMatrix(), zeroPosition)
+	print newArray
 	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
 		newState.h = manhathanDistance(newArray)
@@ -88,7 +95,8 @@ def createStatesManhatan(current_state):
 		newState.f = newState.getF()
 		children.append(newState)
 	# Left
-	newArray = left(current_state.matrix, zeroPosition)
+	print current_state.getMatrix()
+	newArray = left(current_state.getMatrix(), zeroPosition)
 	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
 		newState.h = manhathanDistance(newArray)
@@ -99,7 +107,9 @@ def createStatesManhatan(current_state):
 		newState.f = newState.getF()
 		children.append(newState)
 	# Right
-	newArray = right(current_state.matrix, zeroPosition)
+	print current_state.getMatrix()
+	newArray = right(current_state.getMatrix(), zeroPosition)
+	print newArray
 	if newArray is not None:
 		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
 		newState.h = manhathanDistance(newArray)
@@ -182,18 +192,21 @@ def down(matrix, zeroIndex):
 	else:
 		return None
 def right(matrix, zeroIndex):
+	#print 'rigth ' + str(zeroIndex) + " " + str(matrix.index(0))
+	#print matrix
 	if zeroIndex not in [2,5,8]:
 		temp = matrix[zeroIndex]
 		matrix[zeroIndex] = matrix[zeroIndex+1]
 		matrix[zeroIndex+1] = temp
+		#print matrix
 		return matrix
 	else:
 		return None
 def left(matrix, zeroIndex):
 	if zeroIndex not in [0,3,6]:
 		temp = matrix[zeroIndex]
-		matrix[zeroIndex] = matrix[zeroIndex+1]
-		matrix[zeroIndex+1] = temp
+		matrix[zeroIndex] = matrix[zeroIndex-1]
+		matrix[zeroIndex-1] = temp
 		return matrix
 	else:
 		return None
@@ -228,8 +241,8 @@ def AStar():
 	for i in range(len(matrix)):
 		index = randint(0, len(matrix)-1)
 		randmatrix.append(int(matrix.pop(index)))
-	m= map(int,list("123450786"))
-	f = map(int,list("123450786"))
+	m= map(int,list("123456708"))
+	f = map(int,list("123456708"))
 	initialState = State(m)
 	initialState.f = manhathanDistance(m)
 	test = State(f)
@@ -243,23 +256,24 @@ def AStar():
 		A set is an unordered data type with no repited elements.
 		It is use for easy comparision of membership
 	"""
-	explored = set()
+	explored = {}
 	frontier.enqueue(initialState)
 	count  = 1
 	while frontier:
 		count += 1
-		if count == 500:
+		if count == 5:
 			break
 		state = frontier.dequeue()
 		#print state.to_string() + " " + str(state.f)
-		explored.add(state)
+		explored[state.to_string()] = 1
 		if state.isGoal():
+			print state
 			return state
-		children = createStatesMissplaced(state)
+		children = createStatesManhatan(state)
 		for child in children:
-			if (child not in explored) and (child not in frontier):
+			if (child.to_string() not in explored) and (child not in frontier):
 				frontier.enqueue(child)
-			elif child in explored:
+			elif child.to_string() in explored:
 				continue
 			elif child in frontier:
 				ch = frontier.__getitem__(child)
@@ -272,10 +286,11 @@ def AStar():
 		x = frontier.dequeue()
 		print x.to_string() + " " + str(x.f)
 	"""
+	"""
 	for x in explored:
-		print x.to_string() + " " + str(x.f)
+		print x
 	return None
-
+	"""
 
 def printSolution(solution):
 
@@ -298,7 +313,7 @@ def main():
 	solution = AStar()
 	print "A Star using manhathanDistance:"
 	if solution is not None:
-		#printSolution(solution)
+		printSolution(solution)
 		print "hey"
 	else:
 		print 'No solution.'
