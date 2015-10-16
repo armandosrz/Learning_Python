@@ -184,15 +184,13 @@ def AStar():
 	count  = 1
 	while frontier:
 		count += 1
-		if (count == 50):
-			break
 		state = frontier.dequeue()
 		explored.add(state)
 		if state.isGoal():
 			return state
 		children = createStatesManhatan(state)
 		for child in children:
-			if (child not in explored) or (child not in frontier):
+			if (child not in explored) and (child not in frontier):
 				frontier.enqueue(child)
 			if child in explored:
 				continue
