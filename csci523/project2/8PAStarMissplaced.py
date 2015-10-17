@@ -1,64 +1,9 @@
-import math
-import sys
 from PRIORITYQueue import PriorityQueue
 from random import randint
-from copy import copy
 from State import State
 
 
 # Program Starts
-def createStatesManhatan(current_state):
-	children = []
-	zeroPosition = current_state.zeroIndex()
-	mtrx = current_state.getMatrix()
-	# Up
-	newArray = up(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-	# Down
-	newArray = down(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-	# Left
-	newArray = left(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-	# Right
-	newArray = right(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = manhathanDistance(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-
-	return children
-
-
 def createStatesMissplaced(current_state):
 	children = []
 	zeroPosition = current_state.zeroIndex()
@@ -66,7 +11,8 @@ def createStatesMissplaced(current_state):
 	# Up
 	newArray = up(current_state.getMatrix(), zeroPosition)
 	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
+		newState = State(newArray, depth = current_state.depth +1, \
+				   parent = current_state)
 		newState.h = missplacedTitles(newArray)
 		if newState.parent is None:
 			newState.g = 0
@@ -77,7 +23,8 @@ def createStatesMissplaced(current_state):
 	# Down
 	newArray = down(current_state.getMatrix(), zeroPosition)
 	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
+		newState = State(newArray, depth = current_state.depth +1, \
+				   parent = current_state)
 		newState.h = missplacedTitles(newArray)
 		if newState.parent is None:
 			newState.g = 0
@@ -128,8 +75,6 @@ def down(matrix, zeroIndex):
 	else:
 		return None
 def right(matrix, zeroIndex):
-	#print 'rigth ' + str(zeroIndex) + " " + str(matrix.index(0))
-	#print matrix
 	if zeroIndex not in [2,5,8]:
 		temp = matrix[zeroIndex]
 		matrix[zeroIndex] = matrix[zeroIndex+1]
@@ -150,25 +95,13 @@ def left(matrix, zeroIndex):
 def missplacedTitles(matrix):
 	count = 0
 	for i in xrange(len(matrix)):
-		if (matrix[i] != i+1 and matrix[i] != 0):
+		if matrix[i] != i+1 and matrix[i] != 0:
 			count += 1
 	return count
 
-def manhathanDistance(matrix):
-	manhathan = 0
-	goal = map(int, list("123456780"))
-	for num in matrix:
-		if num!=0:
-			posMatrix = matrix.index(num)
-			yMatrix, xMatrix = divmod(posMatrix, 3)
-			posGoal = goal.index(num)
-			yGoal, xGoal = divmod(posGoal, 3)
-			manhathan += abs(yMatrix - yGoal) + abs(xMatrix - xGoal)
-	return manhathan
-
 def createMoves(matrix):
 	for i in range(100):
-		rand = randint(1,4)
+		rand = randint(1, 4)
 		if rand == 1:
 			up(matrix, matrix.index(0))
 		elif rand == 2:
@@ -182,15 +115,17 @@ def createMoves(matrix):
 
 
 def AStar():
+
 	# Set up inital condition.
 	# Ask for all requiered input.
-
+	global statesCount
+	statesCount = 1
 	matrix = map(int,list("123456780"))
 	print matrix
 	matrixWithMoves = createMoves(matrix)
 	print matrixWithMoves
 	initialState = State(matrixWithMoves)
-	initialState.f = manhathanDistance(matrixWithMoves)
+	initialState.f = missplacedTitles(matrixWithMoves)
 
 
 	if initialState.isGoal():
@@ -198,10 +133,8 @@ def AStar():
 	frontier = PriorityQueue()
 	explored = {}
 	frontier.enqueue(initialState)
-	count  = 1
 	while frontier:
 		state = frontier.dequeue()
-		#print state.to_string() + " " + str(state.f)
 		explored[state.to_string()] = 1
 		if state.isGoal():
 			return state
@@ -211,10 +144,10 @@ def AStar():
 				continue
 			if child not in frontier:
 				frontier.enqueue(child)
+				statesCount += 1
 			else:
 				ch = frontier.__getitem__(child)
 				if ch.f > child.f:
-					#print child.to_string() + " " + str(ch.f) + " " + str(child.f)
 					frontier.__delitem__(child)
 					frontier.enqueue(child)
 					ts = frontier.__getitem__(child)
@@ -223,24 +156,25 @@ def AStar():
 
 def printSolution(solution):
 
-		path = []
-		path.append(solution)
-		parent = solution.parent
-		while parent:
-			path.append(parent)
-			parent = parent.parent
+	path = []
+	path.append(solution)
+	parent = solution.parent
+	while parent:
+		path.append(parent)
+		parent = parent.parent
 
 		pathSize = len(path)
 
-		for i in range(pathSize):
-			state = path[pathSize-i-1]
-			print state
-			if i < pathSize-1:
-				print "-----> " + u"\u2193"
-			else:
-				print u"\u2191"*5
+	for i in range(pathSize):
+		state = path[pathSize-i-1]
+		print state
+		if i < pathSize-1:
+			print "-----> " + u"\u2193"
+		else:
+			print u"\u2191"*5
+	print "Number of states added to Queue = " + str(statesCount)
+	print "Number of trips = " + str(pathSize-1)
 
-		print "Number of trips = " + str(pathSize-1)
 
 
 def main():
@@ -254,4 +188,4 @@ def main():
 
 
 if __name__ == '__main__':
-  main()
+	main()

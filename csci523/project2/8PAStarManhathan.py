@@ -2,67 +2,10 @@ import math
 import sys
 from PRIORITYQueue import PriorityQueue
 from random import randint
-from copy import copy
+from State import State
 
 
 # Program Starts
-
-class State(object):
-
-	def __init__(self, matrix, depth = 0, parent = None, h=0, g=0):
-		self.parent = parent
-		self.g = g
-		self.h = h
-		self.matrix = map(int, list(matrix))
-		self.depth = depth
-		self.f = 0
-
-	def __eq__(self, other):
-		if isinstance(other, State):
-			return self.matrix == other.matrix
-	def __ne__(self, other):
-		return not self.__eq__(other)
-
-	def __hash__(self):
-		return hash(int(self.to_string()))
-
-	def __cmp__(self, other):
-		if self.__eq__(other):
-			return 0
-		elif self.f > other.f:
-			return 1
-		elif self.f < other.f:
-			return -1
-		else:
-			return 0
-		#return cmp(self.f, other.f)
-	def __repr__(self):
-		return self.__str__()
-	def __str__(self):
-		toPrint = ''
-		for i, j in enumerate(self.matrix):
-			toPrint += '{0:^3}|'.format(j)
-			if i == 2 or i == 5:
-				toPrint += '\n'
-		return toPrint
-	def to_string(self):
-		return ''.join(map(str, self.matrix))
-
-	def isGoal(self):
-		goalStr = "123405678"
-		goal = map(int, list(goalStr))
-		if self.matrix == goal:
-			return True
-		else:
-			return False
-	def zeroIndex(self):
-		return copy(self.matrix.index(0))
-	def getF(self):
-		return self.h + self.g
-	def getMatrix(self):
-		return copy(self.matrix)
-
-
 def createStatesManhatan(current_state):
 	children = []
 	zeroPosition = current_state.zeroIndex()
@@ -114,58 +57,6 @@ def createStatesManhatan(current_state):
 
 	return children
 
-
-def createStatesMissplaced(current_state):
-	children = []
-	zeroPosition = current_state.zeroIndex()
-
-	# Up
-	newArray = up(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = missplacedTitles(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-	# Down
-	newArray = down(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = missplacedTitles(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-	# Left
-	newArray = left(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = missplacedTitles(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-	# Right
-	newArray = right(current_state.getMatrix(), zeroPosition)
-	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
-		newState.h = missplacedTitles(newArray)
-		if newState.parent is None:
-			newState.g = 0
-		else:
-			newState.g = newState.parent.g+1
-		newState.f = newState.getF()
-		children.append(newState)
-
-	return children
-
 def up(matrix, zeroIndex):
 	if zeroIndex > 2:
 		temp = matrix[zeroIndex]
@@ -183,9 +74,8 @@ def down(matrix, zeroIndex):
 		return matrix
 	else:
 		return None
+
 def right(matrix, zeroIndex):
-	#print 'rigth ' + str(zeroIndex) + " " + str(matrix.index(0))
-	#print matrix
 	if zeroIndex not in [2,5,8]:
 		temp = matrix[zeroIndex]
 		matrix[zeroIndex] = matrix[zeroIndex+1]
@@ -194,6 +84,7 @@ def right(matrix, zeroIndex):
 		return matrix
 	else:
 		return None
+
 def left(matrix, zeroIndex):
 	if zeroIndex not in [0,3,6]:
 		temp = matrix[zeroIndex]
@@ -203,16 +94,9 @@ def left(matrix, zeroIndex):
 	else:
 		return None
 
-def missplacedTitles(matrix):
-	count = 0
-	for i in xrange(len(matrix)):
-		if (matrix[i] != i+1 and matrix[i] != 0):
-			count += 1
-	return count
-
 def manhathanDistance(matrix):
 	manhathan = 0
-	goal = map(int, list("123405678"))
+	goal = map(int, list("123456780"))
 	for num in matrix:
 		if num!=0:
 			posMatrix = matrix.index(num)
@@ -240,12 +124,14 @@ def createMoves(matrix):
 def AStar():
 	# Set up inital condition.
 	# Ask for all requiered input.
+	global statesCount
 
-	matrix = map(int,list("123405678"))
+	matrix = map(int,list("123456780"))
 	print matrix
+	test = map(int, list("704512836"))
 	matrixWithMoves = createMoves(matrix)
-	print matrixWithMoves
-	initialState = State(matrixWithMoves)
+	print test
+	initialState = State(test)
 	initialState.f = manhathanDistance(matrixWithMoves)
 
 
@@ -254,7 +140,7 @@ def AStar():
 	frontier = PriorityQueue()
 	explored = {}
 	frontier.enqueue(initialState)
-	count  = 1
+	statesCount  = 1
 	while frontier:
 		state = frontier.dequeue()
 		#print state.to_string() + " " + str(state.f)
@@ -267,6 +153,7 @@ def AStar():
 				continue
 			if child not in frontier:
 				frontier.enqueue(child)
+				statesCount += 1
 			else:
 				ch = frontier.__getitem__(child)
 				if ch.f > child.f:
@@ -296,6 +183,7 @@ def printSolution(solution):
 			else:
 				print u"\u2191"*5
 
+		print "Number of states added to Queue = " + str(statesCount)
 		print "Number of trips = " + str(pathSize-1)
 
 
