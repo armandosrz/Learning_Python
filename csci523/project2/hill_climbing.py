@@ -1,5 +1,6 @@
 from State import State
-from AStarManhathan import up, down, left, rigth
+from AStarManhathan import up, down, left, right, createMoves, manhathanDistance
+from copy import copy
 
 def createStatesManhatan(current_state):
 	children = []
@@ -32,7 +33,7 @@ def createStatesManhatan(current_state):
 
 	return children
 
-def HillClimbing(matrix):
+def hillClimbing(matrix):
 	# Set up inital condition.
 	# Ask for all requiered input.
 	global statesCount
@@ -43,41 +44,38 @@ def HillClimbing(matrix):
 	matrixWithMoves = createMoves(matrix)
 	print test
 	"""
-	initialState = State(matrix)
-	initialState.f = manhathanDistance(matrix)
+	currentState = State(matrix)
+	currentState.f = manhathanDistance(matrix)
+	nextState = State(matrix)
+	nextState.f = copy(currentState.f)
+	statesCount = 1
 
-
-	if initialState.isGoal():
-		return initialState
-	frontier = PriorityQueue()
-	explored = {}
-	frontier.enqueue(initialState)
-	statesCount  = 1
-	while frontier:
-		state = frontier.dequeue()
-		#print state.to_string() + " " + str(state.f)
-		explored[state.to_string()] = 1
-		if state.isGoal():
-			return state
-		children = createStatesManhatan(state)
+	while True:
+		children = createStatesManhatan(currentState)
 		for child in children:
-			if child.to_string() in explored:
-				continue
-			if child not in frontier:
-				frontier.enqueue(child)
-				statesCount += 1
+			if child.f < nextState.f:
+				nextState = child
+		if nextState.f >= currentState.f:
+			if nextState.isGoal():
+				return "Goal", nextState, statesCount
 			else:
-				ch = frontier.__getitem__(child)
-				if ch.f > child.f:
-					#print child.to_string() + " " + str(ch.f) + " " + str(child.f)
-					frontier.__delitem__(child)
-					frontier.enqueue(child)
-					ts = frontier.__getitem__(child)
+				return 'Local Maxima', nextState, statesCount
+		currentState = copy(nextState)
+		statesCount += 1
 	return None
+
+def printSolutionHillClimbing(matrix):
+	solution = hillClimbing(matrix)
+	if not None:
+		print solution[0]
+		print solution[1]
+		print solution[2]
+	else:
+		print 'No solution'
 
 
 def main():
-	printSolutionManhatan(createMoves(map(int, list("123456780"))))
+	printSolutionHillClimbing(createMoves(map(int, list("123456780"))))
 
 
 if __name__ == '__main__':

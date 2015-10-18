@@ -20,7 +20,7 @@ def main():
 
 
 def createMoves(matrix):
-	for i in range(75):
+	for i in range(100):
 		rand = randint(1,4)
 		if rand == 1:
 			AStarMissplaced.up(matrix, matrix.index(0))
