@@ -33,17 +33,9 @@ def createStatesManhatan(current_state):
 
 	return children
 
-def hillClimbing(matrix):
+def hc_Steepest(matrix):
 	# Set up inital condition.
 	# Ask for all requiered input.
-	global statesCount
-	"""
-	matrix = map(int,list("123456780"))
-	print matrix
-	test = map(int, list("704512836"))
-	matrixWithMoves = createMoves(matrix)
-	print test
-	"""
 	currentState = State(matrix)
 	currentState.f = manhathanDistance(matrix)
 	nextState = State(matrix)
@@ -64,15 +56,48 @@ def hillClimbing(matrix):
 		statesCount += 1
 	return None
 
+def hc_FirstChoice(matrix):
+	# Set up inital condition.
+	# Ask for all requiered input.
+	currentState = State(matrix)
+	currentState.f = manhathanDistance(matrix)
+	nextState = State(matrix)
+	nextState.f = copy(currentState.f)
+	statesCount = 1
+
+	while True:
+		children = createStatesManhatan(currentState)
+		for child in children:
+			if child.f < nextState.f:
+				nextState = child
+				print 'Break'
+				break
+		if nextState.f >= currentState.f:
+			if nextState.isGoal():
+				return "Goal", nextState, statesCount
+			else:
+				return 'Local Maxima', nextState, statesCount
+		currentState = copy(nextState)
+		statesCount += 1
+	return None
+
+
 def printSolutionHillClimbing(matrix):
-	solution = hillClimbing(matrix)
-	if not None:
+	solution = hc_Steepest(copy(matrix))
+	if solution is not None:
 		print solution[0]
 		print solution[1]
 		print solution[2]
 	else:
 		print 'No solution'
 
+	solution = hc_FirstChoice(copy(matrix))
+	if solution is not None:
+		print solution[0]
+		print solution[1]
+		print solution[2]
+	else:
+		print 'No solution'
 
 def main():
 	printSolutionHillClimbing(createMoves(map(int, list("123456780"))))
