@@ -66,8 +66,21 @@ Issues encountered:
 		errors in my logic statements.
 		Ignorance of python language class implementation for object comparison,
 		which was solved with the __hash__() and __eq__() function additions inside
-		of the State() class. My elements in the explored set were all being added
-		to the set, even if the objects hold the same information.
+		of the State() class. At first, I tried using a set to keep track of all the
+		repeated states, however since my __eq__() method compared to arrays and
+		my __cmp__() function compared the values of the f in each state, when two
+		states f function are equal, that should match my __eq__() function, which
+		in this case was not and the set did not worked properly. I solved by
+		keeping track of the repeated states using a map, with the state represented
+		as a string as key.
+
+		In python arrays or list are passes by reference, so if x = [1,2] and
+		y = [3,4] if we do a x = y, both arrays match to the same address and modifying
+		one will also change the other. After spending some time looking for the bug
+		I discovered that whenever I was generating my set of possible moves, I was
+		actually passing a different array into my up, down, left and right functions.
+		So I was never actually generating the expected results until the bug was
+		encountered. The solution was to pass a copy of the object each time. 
 
 Known bugs:
 	At running time the program will display a syntax warning:

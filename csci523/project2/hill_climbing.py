@@ -85,7 +85,7 @@ def hc_RandomRestart(matrix, count):
 	# Ask for all requiered input.
 	currentState = State(copy(matrix))
 	currentState.f = manhathanDistance(copy(matrix))
-	nextState = State(matrix)
+	nextState = State(copy(matrix))
 	nextState.f = copy(currentState.f)
 	statesCount = count
 
