@@ -37,7 +37,6 @@ def createStatesManhatan(current_state):
 
 def hc_Steepest(matrix):
 	# Set up inital condition.
-	# Ask for all requiered input.
 	currentState = State(matrix)
 	currentState.f = manhathanDistance(matrix)
 	nextState = State(matrix)
@@ -60,10 +59,9 @@ def hc_Steepest(matrix):
 
 def hc_FirstChoice(matrix):
 	# Set up inital condition.
-	# Ask for all requiered input.
-	currentState = State(matrix)
+	currentState = State(copy(matrix))
 	currentState.f = manhathanDistance(matrix)
-	nextState = State(matrix)
+	nextState = State(copy(matrix))
 	nextState.f = copy(currentState.f)
 	statesCount = 1
 
@@ -85,8 +83,8 @@ def hc_FirstChoice(matrix):
 def hc_RandomRestart(matrix, count):
 	# Set up inital condition.
 	# Ask for all requiered input.
-	currentState = State(matrix)
-	currentState.f = manhathanDistance(matrix)
+	currentState = State(copy(matrix))
+	currentState.f = manhathanDistance(copy(matrix))
 	nextState = State(matrix)
 	nextState.f = copy(currentState.f)
 	statesCount = count
