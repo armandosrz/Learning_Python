@@ -123,7 +123,7 @@ def printSolutionHillClimbing(matrix):
 	if solution is not None:
 		mainSolution.extend(solution)
 		mainSolution.append(end-start)
-		print mainSolution
+		print "hc_Steepest"
 		print solution[0]
 		print solution[1]
 		print solution[2]
@@ -136,6 +136,7 @@ def printSolutionHillClimbing(matrix):
 	if solution is not None:
 		mainSolution.extend(solution)
 		mainSolution.append(end-start)
+		print "hc_FirstChoice"
 		print solution[0]
 		print solution[1]
 		print solution[2]
@@ -145,6 +146,7 @@ def printSolutionHillClimbing(matrix):
 	solution = hc_RandomRestart(copy(matrix), 0)
 	end = time.clock()
 	if solution is not None:
+		print "hc_RandomRestart"
 		mainSolution.extend(solution)
 		mainSolution.append(end-start)
 		print solution[0]
