@@ -153,7 +153,7 @@ def AStar(matrix):
 				if ch.f > child.f:
 					frontier.__delitem__(child)
 					frontier.enqueue(child)
-					ts = frontier.__getitem__(child)
+					# ts = frontier.__getitem__(child)
 	return None
 
 

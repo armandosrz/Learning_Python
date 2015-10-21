@@ -96,8 +96,8 @@ Known bugs:
 	says it should be one. This part was not required for undergrads
 
 Results:
-	My program generates and displays a graph of the generated States and the
-	connection with parent and sons states.
+	Please refer to (astar.xlxs) for the complete data set and to (results.docx)
+	for the data explained with more detail.
 
 Sample output:
 	-AStarManhathan:
