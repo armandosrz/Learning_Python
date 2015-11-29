@@ -1,6 +1,7 @@
 from PRIORITYQueue import PriorityQueue
 from random import randint
 from State import State
+import time
 
 
 # Program Starts
@@ -152,13 +153,15 @@ def AStar(matrix):
 				if ch.f > child.f:
 					frontier.__delitem__(child)
 					frontier.enqueue(child)
-					ts = frontier.__getitem__(child)
+					# ts = frontier.__getitem__(child)
 	return None
 
 
 def printSolutionMissplaced(matrix):
 
+	start = time.clock()
 	solution = AStar(matrix)
+	end = time.clock()
 	if solution is not None:
 		path = []
 		path.append(solution)
@@ -180,7 +183,7 @@ def printSolutionMissplaced(matrix):
 		print "Number of states added to Queue = " + str(statesCount)
 		print "Number of trips = " + str(pathSize-1)
 		print "We made it :)"
-		return statesCount, pathSize-1
+		return statesCount, pathSize-1, end-start
 	else:
 		print "No solution."
 	return None
