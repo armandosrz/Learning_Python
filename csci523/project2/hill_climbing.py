@@ -27,7 +27,7 @@ def createStatesManhatan(current_state):
 	# Right
 	newArray = right(current_state.getMatrix(), zeroPosition)
 	if newArray is not None:
-		newState = State(newArray, depth = current_state.depth +1, parent = current_state)
+		newState =	 State(newArray, depth = current_state.depth +1, parent = current_state)
 		newState.f = manhathanDistance(newArray)
 		children.append(newState)
 
